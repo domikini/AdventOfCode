@@ -5,7 +5,7 @@ use std::io::{BufRead, BufReader, Error, ErrorKind, Read};
 
 
 pub fn ac3_2() -> Result<(), Error>{
-    let mut v = read_a_file(File::open("input31")?)?;
+    let mut v = read_a_file(File::open("input3")?)?;
     let mut oxygen = v.clone();
     let mut co2 = v.clone();
     let mut n:usize = 0;

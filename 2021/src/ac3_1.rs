@@ -8,7 +8,7 @@ use std::io::{BufRead, BufReader, Error, ErrorKind, Read};
 pub fn ac3_1() -> Result<(), Error>{
     let mut gamma: String = "".to_string();
     let mut epsilon: String = "".to_string();
-    let v = read_a_file(File::open("input31")?)?;
+    let v = read_a_file(File::open("input3")?)?;
     let line_length = v[0].len();
     let mut n:usize = 0;
     while n < line_length {
