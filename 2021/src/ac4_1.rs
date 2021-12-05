@@ -11,7 +11,7 @@ pub fn ac4_1() -> Result<(), Error>{
     let mut bingo_sequence_int:Vec<usize> = bingo_sequence.into_iter().map(|number|number.parse().unwrap()).collect();
     println!("{:?}", bingo_sequence_int);
     for line in v {
-        // println!("{}", line);
+        println!("{}", line);
     }
     Ok(())
 }
