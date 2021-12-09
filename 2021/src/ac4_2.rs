@@ -33,8 +33,6 @@ pub fn ac4_2() -> Result<(), Error>{
     }
     boards.push(board);
     let mut bingo_iteration:usize = 0;
-    let mut bingo_iteration_find_last_board:usize = 0;
-    let mut bingo_iteration_last_board_bingo:usize = 0;
     while bingo_iteration < bingo_sequence_int.len() {
         let boards_copy = boards.clone();
         let non_bingo_boards: Vec<_> = boards_copy.into_iter().filter(|b|!check_bingo(b)).collect();
