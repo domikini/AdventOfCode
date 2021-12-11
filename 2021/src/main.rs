@@ -8,6 +8,7 @@ mod ac4_1;
 mod ac4_2;
 mod ac5_1;
 mod ac9_1;
+mod ac10_1;
 
 use std::mem;
 use crate::ac1_1::ac1_1;
@@ -20,6 +21,7 @@ use crate::ac4_1::ac4_1;
 use crate::ac4_2::ac4_2;
 use crate::ac5_1::ac5_1;
 use crate::ac9_1::ac9_1;
+use crate::ac10_1::ac10_1;
 
 fn main() {
     ac1_1();
@@ -32,5 +34,6 @@ fn main() {
     ac4_2();
     ac5_1();
     ac9_1();
+    ac10_1();
 }
 
