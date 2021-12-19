@@ -1,5 +1,5 @@
 [package]
-name = "rust"
+name = "adventofcode2021"
 version = "0.1.0"
 edition = "2018"
 
@@ -8,3 +8,4 @@ edition = "2018"
 [dependencies]
 regex = "1"
 array2d = "0.2.1"
+rand="0.8.4"
