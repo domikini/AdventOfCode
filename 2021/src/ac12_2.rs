@@ -8,7 +8,8 @@ use std::iter::FromIterator;
 use std::thread;
 use rand::seq::SliceRandom;
 
-pub fn ac12_2() -> Result<(), Error> {
+
+pub fn ac12_2() -> Result<(), Error>{
     let v = read_a_file(File::open("input12")?)?;
 
     let mut moves: Vec<Move> = Vec::new();
@@ -62,8 +63,7 @@ pub fn ac12_2() -> Result<(), Error> {
         }
         outer_iteration += 1;
     }
-
-
+    
     println!("Svar 12_2: {}", paths_hashset.len());
     Ok(())
 }

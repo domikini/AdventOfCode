@@ -31,7 +31,7 @@ pub fn ac5_2() -> Result<(), Error>{
 
     let overlap_more_than_2 = map.as_row_major().into_iter().filter(|u| u.clone() >= 2 as usize ).collect::<Vec<usize>>().len();
 
-    println!("Svar 5_1: {}", overlap_more_than_2);
+    println!("Svar 5_2: {}", overlap_more_than_2);
     Ok(())
 }
 
@@ -72,39 +72,48 @@ fn coordinates_to_line_vec (l: &String) -> Vec<Point> {
     if (start_point.x == end_point.x) {
         // println!("vertical line");
         // println!("start: {} end: {}", start_point.y, end_point.y);
-        points = points_generator(Vec::new(), extend_endpoints(&start_point.y, &end_point.y), &start_point.x, "vertical");
+        points = points_generator_ver_hor(extend_endpoints(&start_point.y, &end_point.y), &start_point.x, "x");
     } else if (start_point.y == end_point.y) {
         // println!("horizontal line");
         // println!("start: {} end: {}", start_point.x, end_point.x);
-        points = points_generator(extend_endpoints(&start_point.x, &end_point.x), Vec::new(), &start_point.y, "horizontal");
+        points = points_generator_ver_hor(extend_endpoints(&start_point.x, &end_point.x), &start_point.y, "y");
     }
     else {
         println!("diagonal");
         println!("start x: {} start y: {}", start_point.x, start_point.y);
         println!("end x: {} end y: {}", end_point.x, end_point.y);
-        points = points_generator(extend_endpoints(&start_point.x, &end_point.x), extend_endpoints(&start_point.y, &end_point.y),&(0 as usize), "diagonal")
+        if((start_point.x < end_point.x && start_point.y < end_point.y) || (start_point.x > end_point.x && start_point.y > end_point.y)) {
+            points = points_generator_diagonal(extend_endpoints(&start_point.x, &end_point.x), extend_endpoints(&start_point.y, &end_point.y), "down")
+        }
+        else if((start_point.x > end_point.x && start_point.y < end_point.y) || (start_point.x < end_point.x && start_point.y > end_point.y)) {
+            points = points_generator_diagonal(extend_endpoints(&start_point.x, &end_point.x), extend_endpoints(&start_point.y, &end_point.y),"up")
+        }
     }
     // println!("{:?}", points);
     return points;
 }
 
-fn points_generator (endpoints_x:Vec<usize>, endpoints_y:Vec<usize>, constant:&usize, type_of_line:&str) -> Vec<Point> {
+fn points_generator_ver_hor(endpoints:Vec<usize>, constant:&usize, constant_field:&str) -> Vec<Point> {
     let mut points:Vec<Point> = Vec::new();
     let constant:usize = constant.clone();
-    if(type_of_line == "horizontal"){
-        for e in endpoints_y {
+    for e in endpoints{
+        if(constant_field == "x"){
             points.push(Point { x: constant, y: e });
-        }
-    } else if (type_of_line == "vertical") {
-        for e in endpoints_x {
+        }else if (constant_field == "y"){
             points.push(Point { x: e, y: constant });
         }
-    } else if (type_of_line == "diagonal"){
-        let iteration = 0;
-        while iteration < endpoints_x.len() {
-            points.push(Point {x:endpoints_x[iteration]
-                y: endpoints_y[iteration]})
-        }
+    }
+    return points;
+}
+
+fn points_generator_diagonal (endpoints_x:Vec<usize>, endpoints_y:Vec<usize>, type_of_diagonal:&str) -> Vec<Point> {
+    let mut points:Vec<Point> = Vec::new();
+    if(type_of_diagonal == "down"){
+        println!("{:?}", endpoints_x);
+        println!("{:?}", endpoints_y);
+    } else if (type_of_diagonal == "up") {
+        println!("{:?}", endpoints_x);
+        println!("{:?}", endpoints_y);
     }
     return points;
 }
