@@ -30,13 +30,6 @@ pub fn ac5_2() -> Result<(), Error>{
         map = plot_on_map(&map, &line);
     }
 
-    // for line in map.as_rows(){
-    //     for p in line{
-    //         print!("{}", p);
-    //     }
-    //     println!("");
-    // }
-
     let overlap_more_than_2 = map.as_row_major().into_iter().filter(|u| u.clone() >= 2 as usize ).collect::<Vec<usize>>().len();
 
     println!("Svar 5_2: {}", overlap_more_than_2);
@@ -78,12 +71,8 @@ fn coordinates_to_line_vec (l: &String) -> Vec<Point> {
     let start_point: Point = convert_string_to_point(&start);
     let end_point: Point = convert_string_to_point(&end);
     if (start_point.x == end_point.x) {
-        // println!("vertical line");
-        // println!("start: {} end: {}", start_point.y, end_point.y);
         points = points_generator_ver_hor(extend_endpoints(&start_point.y, &end_point.y), &start_point.x, "x");
     } else if (start_point.y == end_point.y) {
-        // println!("horizontal line");
-        // println!("start: {} end: {}", start_point.x, end_point.x);
         points = points_generator_ver_hor(extend_endpoints(&start_point.x, &end_point.x), &start_point.y, "y");
     }
     else {
@@ -97,7 +86,6 @@ fn coordinates_to_line_vec (l: &String) -> Vec<Point> {
             points = points_generator_diagonal(extend_endpoints(&start_point.x, &end_point.x), extend_endpoints(&start_point.y, &end_point.y),"up")
         }
     }
-    // println!("{:?}", points);
     return points;
 }
 
@@ -117,18 +105,12 @@ fn points_generator_ver_hor(endpoints:Vec<usize>, constant:&usize, constant_fiel
 fn points_generator_diagonal (endpoints_x:Vec<usize>, endpoints_y:Vec<usize>, type_of_diagonal:&str) -> Vec<Point> {
     let mut points:Vec<Point> = Vec::new();
     if(type_of_diagonal == "down"){
-        println!("{}", "down");
-        println!("{:?}", endpoints_x);
-        println!("{:?}", endpoints_y);
         let mut iteration = 0;
         while iteration < endpoints_x.len(){
             points.push(Point{ x: endpoints_x[iteration], y: endpoints_y[iteration] });
             iteration += 1;
         }
     } else if (type_of_diagonal == "up") {
-        println!("{}", "up");
-        println!("{:?}", endpoints_x);
-        println!("{:?}", endpoints_y);
         let mut iteration_x = 0;
         let mut iteration_y = endpoints_y.len() - 1;
         while iteration_x <= endpoints_x.len() - 1{
@@ -170,6 +152,5 @@ fn generate_number_between_points(diff:&usize, start_number:&usize) -> Vec<usize
         start_number += 1;
         counter += 1;
     }
-    // println!("{:?}", generated_numbers);
     return generated_numbers;
 }
