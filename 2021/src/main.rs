@@ -11,6 +11,7 @@ mod ac5_2;
 mod ac9_1;
 mod ac10_1;
 mod ac11_1;
+mod ac12_1;
 mod ac12_2;
 
 use std::mem;
@@ -27,9 +28,11 @@ use crate::ac5_2::ac5_2;
 use crate::ac9_1::ac9_1;
 use crate::ac10_1::ac10_1;
 use crate::ac11_1::ac11_1;
+use crate::ac12_1::ac12_1;
 use crate::ac12_2::ac12_2;
 
 fn main() {
+    // Comment out the solution line to run the solution file
     // ac1_1();
     // ac1_2();
     // ac2_1();
@@ -43,6 +46,7 @@ fn main() {
     // ac9_1();
     // ac10_1();
     // ac11_1();
-    ac12_2();
+    // ac12_1();
+    // ac12_2();
 }
 

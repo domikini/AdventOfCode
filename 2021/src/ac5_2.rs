@@ -5,6 +5,7 @@ use std::convert::TryInto;
 use std::fs::File;
 use array2d::Array2D;
 use std::io::{BufRead, BufReader, Error, ErrorKind, Read};
+use std::ops::Not;
 
 pub fn ac5_2() -> Result<(), Error>{
     let v = read_a_file(File::open("input5")?)?;
@@ -28,6 +29,13 @@ pub fn ac5_2() -> Result<(), Error>{
     for line in lines{
         map = plot_on_map(&map, &line);
     }
+
+    // for line in map.as_rows(){
+    //     for p in line{
+    //         print!("{}", p);
+    //     }
+    //     println!("");
+    // }
 
     let overlap_more_than_2 = map.as_row_major().into_iter().filter(|u| u.clone() >= 2 as usize ).collect::<Vec<usize>>().len();
 
@@ -109,11 +117,25 @@ fn points_generator_ver_hor(endpoints:Vec<usize>, constant:&usize, constant_fiel
 fn points_generator_diagonal (endpoints_x:Vec<usize>, endpoints_y:Vec<usize>, type_of_diagonal:&str) -> Vec<Point> {
     let mut points:Vec<Point> = Vec::new();
     if(type_of_diagonal == "down"){
+        println!("{}", "down");
         println!("{:?}", endpoints_x);
         println!("{:?}", endpoints_y);
+        let mut iteration = 0;
+        while iteration < endpoints_x.len(){
+            points.push(Point{ x: endpoints_x[iteration], y: endpoints_y[iteration] });
+            iteration += 1;
+        }
     } else if (type_of_diagonal == "up") {
+        println!("{}", "up");
         println!("{:?}", endpoints_x);
         println!("{:?}", endpoints_y);
+        let mut iteration_x = 0;
+        let mut iteration_y = endpoints_y.len() - 1;
+        while iteration_x <= endpoints_x.len() - 1{
+            points.push(Point{ x: endpoints_x[iteration_x], y: endpoints_y[iteration_y] });
+            iteration_x += 1;
+            if iteration_y == 0 {} else { iteration_y -= 1 };
+        }
     }
     return points;
 }
