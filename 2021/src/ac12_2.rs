@@ -1,69 +1,67 @@
 #![allow(dead_code)]
 
 use std::collections::{HashMap, HashSet};
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use array2d::Array2D;
-use std::io::{BufRead, BufReader, Error, ErrorKind, Read};
+use std::io::{BufRead, BufReader, Error, ErrorKind, Read, Write};
 use std::iter::FromIterator;
-use std::thread;
+use std::{fs, thread};
 use rand::seq::SliceRandom;
 
 
 pub fn ac12_2() -> Result<(), Error>{
     let v = read_a_file(File::open("input12")?)?;
+    let mut paths_hashset:HashSet<String> = read_output_file(File::open("output12_2")?)?;
 
-    let mut moves: Vec<Move> = Vec::new();
+    let mut moves: Vec<_> = Vec::new();
 
     for l in v {
         let mut new_move: Vec<Move> = create_new_move_from_line(&l);
         moves.append(&mut new_move);
     }
 
-    let mut paths = Vec::new();
-
-    let mut inner_iteration = 0;
     let mut outer_iteration = 1;
-    let mut paths_hashset = HashSet::new();
+    let mut inner_iteration = 1;
+    let mut handles= Vec::new();
 
-    while outer_iteration < 6 {
-
-        let mut handles= Vec::new();
-        inner_iteration = 0;
-        while inner_iteration < 1000000 {
-            let moves_clone = moves.clone();
-            let handle = thread::spawn(move || {
-                return create_path_from_moves(moves_clone);
-            });
-            handles.push(handle);
-            if (inner_iteration % 10000 == 0) {
-                println!("{}", outer_iteration * inner_iteration);
+    while outer_iteration < 4001 {
+        let moves_clone = moves.clone();
+        let handle = thread::spawn( move || {
+            let mut paths = Vec::new();
+            let mut paths_strings = Vec::new();
+            inner_iteration = 1;
+            while inner_iteration < 10001 {
+                paths.push(create_path_from_moves(&moves_clone));
+                inner_iteration += 1;
             }
-            inner_iteration += 1;
-        }
 
-        for handle in handles {
-            paths.push(handle.join().unwrap());
-        }
+            paths = paths.into_iter().filter(|p| p.moves[p.moves.len() - 1].end == "end").collect();
 
-        paths = paths.into_iter().filter(|p| p.moves[p.moves.len() - 1].end == "end").collect();
-
-        for p in &paths {
-            let mut path_string = String::new();
-            for m in &p.moves {
-                path_string.push_str(&*m.start);
-                path_string.push_str(",");
+            for p in &paths {
+                let mut path_string = String::new();
+                for m in &p.moves {
+                    path_string.push_str(&*m.start);
+                    path_string.push_str(",");
+                }
+                path_string.push_str("end");
+                println!("{}", path_string);
+                paths_strings.push(path_string);
             }
-            path_string.push_str("end");
-            paths_hashset.insert(path_string);
-        }
-
-
-        for p in &paths_hashset{
-            println!("{:?}", p);
-        }
+            return paths_strings;
+        });
+        handles.push(handle);
         outer_iteration += 1;
     }
-    
+
+    for h in handles {
+        let paths = h.join().unwrap();
+        for path in paths{
+            paths_hashset.insert(path);
+        }
+    }
+
+    write_output(&paths_hashset);
+
     println!("Svar 12_2: {}", paths_hashset.len());
     Ok(())
 }
@@ -81,11 +79,12 @@ struct Path{
     moves:Vec<Move>
 }
 
-fn create_path_from_moves(moves: Vec<Move>) -> Path {
+fn create_path_from_moves(moves: &Vec<Move>) -> Path {
+    let mut moves = moves.clone();
     let mut path:Path = Path { moves: Vec::new() };
 
     //Randomly pick one small cave as special cave that can be visited twice
-    let moves_picked_special_small_cave = randomly_pick_small_cave_as_special_cave(moves);
+    let moves_picked_special_small_cave = randomly_pick_small_cave_as_special_cave(&moves);
 
     //Create different move lists. One for possible start moves and the other for all other possible moves.
     let mut start_moves:Vec<Move> = moves_picked_special_small_cave.clone();
@@ -146,9 +145,10 @@ fn increase_small_iteration_with_one(moves:Vec<Move>, special_cave:&String) -> V
     return moves_changed;
 }
 
-fn randomly_pick_small_cave_as_special_cave(moves: Vec<Move>) -> Vec<Move> {
+fn randomly_pick_small_cave_as_special_cave(moves: &Vec<Move>) -> Vec<Move> {
     let moves:Vec<Move> = moves.clone();
     let mut list_of_small_caves:Vec<String> = vec!["yi".to_string(), "qc".to_string(), "xx".to_string(), "iy".to_string(), "qe".to_string()];
+    // let mut list_of_small_caves:Vec<String> = vec!["dc".to_string(), "kj".to_string(), "sa".to_string()];
     let mut special_cave = &list_of_small_caves.choose(&mut rand::thread_rng()).unwrap().clone();
 
     let mut moves_changed = Vec::new();
@@ -225,4 +225,30 @@ fn read_a_file<R: Read>(io: R) -> Result<Vec<String>, Error>  {
             .map_err(|e| Error::new(ErrorKind::InvalidData, e))?);
     }
     Ok(v)
+}
+
+fn read_output_file<R: Read>(io: R) -> Result<HashSet<String>, Error>  {
+    let br = BufReader::new(io);
+    let mut h:HashSet<String> = HashSet::new();
+    for line in br.lines() {
+        h.insert(line?
+            .trim()
+            .parse()
+            .map_err(|e| Error::new(ErrorKind::InvalidData, e))?);
+    }
+    Ok(h)
+}
+
+fn write_output(output:&HashSet<String>) -> std::io::Result<()> {
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open("output12_2")
+        .unwrap();
+
+    for mut line in output.clone(){
+        line += "\n";
+        file.write_all(line.as_ref());
+    }
+    Ok(())
 }
