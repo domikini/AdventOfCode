@@ -10,6 +10,7 @@ mod ac5_1;
 mod ac5_2;
 mod ac9_1;
 mod ac10_1;
+mod ac10_2;
 mod ac11_1;
 mod ac12_1;
 mod ac12_2;
@@ -29,6 +30,7 @@ use crate::ac5_1::ac5_1;
 use crate::ac5_2::ac5_2;
 use crate::ac9_1::ac9_1;
 use crate::ac10_1::ac10_1;
+use crate::ac10_2::ac10_2;
 use crate::ac11_1::ac11_1;
 use crate::ac12_1::ac12_1;
 use crate::ac12_2::ac12_2;
@@ -49,10 +51,11 @@ fn main() {
     // ac5_2();
     // ac9_1();
     // ac10_1();
+    ac10_2();
     // ac11_1();
     // ac12_1();
     // ac12_2();
     // ac13_1();
-    ac13_2();
+    // ac13_2();
 }
 
