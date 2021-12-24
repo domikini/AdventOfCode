@@ -19,7 +19,6 @@ pub fn ac9_2() -> Result<(), Error>{
 
     //Create Array2D map from Vec of rows
     let mut map:Array2D<usize> = Array2D::from_rows(&*rows);
-    println!("{:?}", map);
 
     let mut row = 0;
     let mut column = 0;
@@ -37,10 +36,28 @@ pub fn ac9_2() -> Result<(), Error>{
     row += 1;
     }
 
-    
+    let max_value = map.as_row_major().into_iter().max_by_key(|p|*p).unwrap();
+    let mut iterator = 0;
 
-    println!("Svar 9_2: {}", "test");
+    //Group into Basin struct and add count for every basin tag. Skip any point with the value 9.
+    let mut basins:Vec<Basin> = Vec::new();
+    while iterator < (max_value + 1){
+        let count = map.as_row_major().iter().filter(|p|p == &&iterator && p != &&9).count();
+        basins.push(Basin { tag: iterator, count: count });
+        iterator += 1;
+    }
+
+    basins = basins.into_iter().filter(|b|b.count > 0).collect();
+    basins.sort_by_key(|b|b.count);
+    let total = &basins[basins.len() - 1].count * &basins[basins.len() - 2].count * &basins[basins.len() - 3].count;
+    println!("Svar 9_2: {}", total);
     Ok(())
+}
+
+#[derive(Debug)]
+struct Basin {
+    tag:usize,
+    count:usize,
 }
 
 fn check_four_directions(row:&usize, column:&usize, mut map: &mut Array2D<usize>, basin_tag:usize){
