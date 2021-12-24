@@ -18,65 +18,65 @@ pub fn ac9_2() -> Result<(), Error>{
     }
 
     //Create Array2D map from Vec of rows
-    let map:Array2D<usize> = Array2D::from_rows(&*rows);
-    let mut low_map:Array2D<usize> = Array2D::from_rows(&*rows);
+    let mut map:Array2D<usize> = Array2D::from_rows(&*rows);
     println!("{:?}", map);
 
     let mut row = 0;
     let mut column = 0;
+    let mut basin_tag = 10;
     while row < map.row_len(){
         column = 0;
         while column < map.column_len(){
-                let current = map.get(row, column).unwrap();
-                let mut up:usize = 0;
-                let mut down:usize = 0;
-                let mut left:usize = 0;
-                let mut right:usize = 0;
-                if (row != 0){
-                    up = *map.get(row - 1, column).unwrap();
-                }
-                if (row != map.row_len() - 1){
-                    down = *map.get(row + 1, column).unwrap();
-                }
-                if (column != 0){
-                    left = *map.get(row, column - 1).unwrap();
-                }
-                if (column != map.column_len() - 1){
-                   right = *map.get(row, column + 1).unwrap();
-                }
-                if (current < &up && current < &down && current < &left && current < &right){
-                    low_map.set(row, column, 1234567890);
-                } else if (row == 0 && current < &down && current < &left && current < &right) {
-                    low_map.set(row, column, 1234567890);
-                } else if (row == (map.row_len() -1) && current < &up && current < &left && current < &right) {
-                    low_map.set(row, column, 1234567890);
-                } else if (column == 0 && current < &up && current < &down && current < &right) {
-                    low_map.set(row, column, 1234567890);
-                } else if (column == (map.column_len() - 1) && current < &up && current < &down && current < &left) {
-                    low_map.set(row, column, 1234567890);
+                let current = *map.get(row, column).unwrap();
+                if(current < 9){
+                    check_four_directions(&row, &column, &mut map, basin_tag);
                 }
         column += 1;
+        basin_tag += 1;
         }
     row += 1;
     }
 
-    let mut sum:usize = 0;
-    let mut row = 0;
-    let mut column = 0;
-    while row < low_map.row_len(){
-        column = 0;
-        while column < low_map.column_len(){
-            if(*low_map.get(row, column).unwrap() == 1234567890){
-                sum += (map.get(row, column).unwrap() + 1);
-            }
-        column += 1;
-        }
-    row += 1;
-    }
-    println!("Svar 9_2: {}", sum);
+    
+
+    println!("Svar 9_2: {}", "test");
     Ok(())
 }
 
+fn check_four_directions(row:&usize, column:&usize, mut map: &mut Array2D<usize>, basin_tag:usize){
+    let mut up:usize = 0;
+    let mut down:usize = 0;
+    let mut left:usize = 0;
+    let mut right:usize = 0;
+    let current = map.get(*row, *column).unwrap();
+    if(*current < 9 as usize){
+        map.set(*row, *column, basin_tag);
+    }
+    if (*row != 0){
+        up = *map.get(*row - 1, *column).unwrap();
+        if(up < 9){
+            check_four_directions(&(*row - 1), &*column, &mut map, basin_tag);
+        }
+    }
+    if (*row != map.row_len() - 1){
+        down = *map.get(*row + 1, *column).unwrap();
+        if(down < 9){
+            check_four_directions(&(*row + 1), &*column, &mut map, basin_tag);
+        }
+    }
+    if (*column != 0){
+        left = *map.get(*row, *column - 1).unwrap();
+        if(left < 9){
+            check_four_directions(&*row, &(*column - 1), &mut map, basin_tag);
+        }
+    }
+    if (*column != map.column_len() - 1){
+        right = *map.get(*row, *column + 1).unwrap();
+        if(right < 9){
+            check_four_directions(&*row, &(*column + 1), &mut map, basin_tag);
+        }
+    }
+}
 
 fn read_a_file<R: Read>(io: R) -> Result<Vec<String>, Error>  {
     let br = BufReader::new(io);
