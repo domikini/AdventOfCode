@@ -8,7 +8,6 @@ use array2d::Array2D;
 use std::io::{BufRead, BufReader, Error, ErrorKind, Read};
 use std::ops::Deref;
 use std::str::Chars;
-use differ::Differ;
 
 pub fn ac8_2() -> Result<(), Error>{
     //Hashmap to convert characters to numbers
